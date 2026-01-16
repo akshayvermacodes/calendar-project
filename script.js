@@ -33,6 +33,8 @@ function renderCalendar(date) {
     const key = `${year}-${month}-${i}`;
     clickCount[key] = clickCount[key] || 0;
 
+    day.setAttribute("data-key", key); // for reset targeting
+
     // Initial render: bold date
     day.innerHTML = `<div style="font-weight:bold; font-size:18px;">${i}</div>`;
 
@@ -81,6 +83,22 @@ function prevMonth() {
 function nextMonth() {
   currentDate.setMonth(currentDate.getMonth() + 1);
   renderCalendar(currentDate);
+}
+
+function resetCurrentMonth() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const allDays = document.querySelectorAll(".day");
+  allDays.forEach(day => {
+    const key = day.getAttribute("data-key");
+    if (key && key.startsWith(`${year}-${month}-`)) {
+      clickCount[key] = 0;
+      day.classList.remove("selected");
+      const date = key.split("-")[2];
+      day.innerHTML = `<div style="font-weight:bold; font-size:18px;">${date}</div>`;
+    }
+  });
 }
 
 renderCalendar(currentDate);
